@@ -1,0 +1,4 @@
+model,trials,submodular_violations,monotone_violations
+uniform:0.05,300,0,0
+uniform:0.1,300,0,0
+wc,300,0,0
