@@ -27,7 +27,7 @@ def greedy(snap: Snapshots, k: int):
     snap.reset()
     snap.n_gain_calls = 0
     t0 = time.perf_counter()
-    S, gains, curve = [], [], []
+    S, gains, curve, times = [], [], [], []
     chosen = np.zeros(snap.n, dtype=bool)
     for _ in range(k):
         best_v, best_g = -1, -1.0
@@ -40,8 +40,9 @@ def greedy(snap: Snapshots, k: int):
         snap.add(best_v)
         chosen[best_v] = True
         S.append(best_v); gains.append(best_g); curve.append(snap.sigma)
+        times.append(time.perf_counter() - t0)   # thời gian tích lũy sau mỗi vòng
     return S, dict(gains=gains, curve=curve, calls=snap.n_gain_calls,
-                   time=time.perf_counter() - t0)
+                   time=time.perf_counter() - t0, times=times)
 
 
 def celf(snap: Snapshots, k: int):
