@@ -41,7 +41,7 @@ Các file kết quả chính thức phục vụ báo cáo và slide được lư
 | `results/plan_table.md` | Bảng tổng hợp Markdown cho slide & báo cáo: $\sigma(S)$ trung bình $\pm$ độ lệch chuẩn giữa các lần lặp, chênh lệch theo cặp Greedy − Degree (kèm KTC 95%, dấu `*`), thời gian chạy và độ biến động cascade |
 | `results/plan_summary.csv` | Tóm tắt thống kê theo từng cấu hình $(p, k, \text{algo})$ (spread trung bình, std giữa các lần lặp, cascade std, runtime) |
 | `results/plan_diff.csv` | Chênh lệch theo cặp Greedy − Degree và Greedy − Random qua các lần lặp, khoảng tin cậy 95%, tỷ lệ tăng tương đối và cờ ý nghĩa thống kê |
-| `results/plan_raw.csv` | Mỗi dòng là trung bình 1000 lần mô phỏng IC cho một (p, k, thuật toán, lần lặp) |
+| `results/plan_raw.csv` | Mỗi dòng là trung bình 1000 lần mô phỏng IC cho một (p, k, thuật toán, lần lặp); riêng với Random là trung bình qua 10 tập seed ngẫu nhiên, mỗi tập chấm bằng 1000 lần mô phỏng |
 | `results/figs/plan_fig1_spread_vs_k.png` | Biểu đồ so sánh độ lan truyền $\sigma(S)$ theo $k$ giữa Random, Degree và Greedy trên 3 giá trị $p$ (3 panel) |
 | `results/figs/plan_fig2_runtime.png` | Biểu đồ thời gian chạy (runtime) của Greedy theo $k$ ứng với các mức $p$ khác nhau |
 
@@ -64,8 +64,8 @@ Các file kết quả chính thức phục vụ báo cáo và slide được lư
 - **Tách mẫu chọn / mẫu đánh giá:** chọn seed bằng R live-edge snapshot; đánh giá bằng mô phỏng IC độc lập (seed RNG khác). Nếu đánh giá trên chính mẫu đã chọn, Greedy bị lạc quan.
 - **Vì sao snapshot:** dùng chung R đồ thị sống cho mọi ứng viên → σ̂ vẫn đơn điệu + submodular → Greedy và CELF cho kết quả giống hệt (đã test).
 - **CELF:** do submodular, Δ cũ là cận trên của Δ mới ⇒ chỉ tính lại phần tử đầu heap.
-- **Các chế độ p:** bậc ra trung bình Email-Eu-core ≈ 25. p=0,01 là lan truyền yếu; p=0,05 và p=0,1 đã bão hòa, một seed đã kích hoạt khoảng nửa đồ thị (kết quả thực nghiệm, xem results/plan_table.md), nên mọi thuật toán gần nhau và Greedy chỉ hơn Degree vài phần trăm.
-- **Cận 1−1/e** là trường hợp xấu nhất; trong thí nghiệm brute-force trên đồ thị con 35 nút, Greedy trùng nghiệm tối ưu (xem results/exploratory/bruteforce.csv).
+- **Các chế độ p:** bậc ra trung bình Email-Eu-core ≈ 25. p=0,01 là lan truyền yếu; p=0,05 và p=0,1 đã bão hòa, một seed đã kích hoạt khoảng 47% (p = 0,05) đến 67% (p = 0,1) đồ thị (kết quả thực nghiệm, xem results/plan_table.md), nên mọi thuật toán gần nhau và Greedy chỉ hơn Degree vài phần trăm.
+- **Cận 1−1/e** là trường hợp xấu nhất; trong thí nghiệm brute-force trên đồ thị con 35 nút với k ≤ 3 (chỉ thử k = 1, 2, 3), Greedy trùng nghiệm tối ưu (xem results/exploratory/bruteforce.csv).
 - **Hạn chế cần nói:** email ≠ sức ảnh hưởng thật; p là giả định; Email-Eu-core không phải dữ liệu của bài báo gốc.
 
 ## Việc nên làm tiếp
@@ -73,4 +73,4 @@ Các file kết quả chính thức phục vụ báo cáo và slide được lư
 2. Thêm baseline mạnh hơn: Degree Discount, PageRank (viết thêm trong `algos.py`, thêm 1 dòng trong `run_main.py`).
 3. Phân tích định tính: seed Greedy có trùng nút bậc cao không? Có rải nhiều phòng ban không? (`g.labels` đã nạp sẵn).
 4. Thêm mô hình Linear Threshold nếu GV hỏi (bài báo có xét).
-5. Đối chiếu với lý thuyết: Greedy trùng tối ưu trên đồ thị con nhỏ (results/exploratory/bruteforce.csv); không vi phạm submodular (results/exploratory/submodular_check.csv); Δ giảm dần (results/exploratory/figs/fig3_marginal_gain.png).
+5. Đối chiếu với lý thuyết: Greedy trùng tối ưu trên đồ thị con nhỏ với k ≤ 3 (results/exploratory/bruteforce.csv); không vi phạm submodular (results/exploratory/submodular_check.csv); Δ giảm dần (results/exploratory/figs/fig3_marginal_gain.png).
