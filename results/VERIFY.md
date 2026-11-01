@@ -23,7 +23,7 @@ Tài liệu này ghi lại kết quả kiểm tra chéo độc lập toàn bộ 
 - **Thời gian chọn seed (`runtime`):**
   - Tại $p=0.01$ và $p=0.05$: Chênh lệch không đáng kể ($< 0.011$s).
   - Tại $p=0.10$: Greedy runtime trung bình trong `plan_raw.csv` là $1.27$s, trong khi `plan_summary.csv` và `plan_table.md` ghi nhận $1.36$s (chênh lệch $\sim 0.085$s).
-  - *Ghi chú:* File `plan_raw.csv` có timestamp ghi nhận (21:00) sau `plan_summary.csv` (20:52). Do thời gian chạy đo bằng `time.perf_counter()` có độ dao động tự nhiên theo tải hệ thống giữa các lần thực thi, trong khi các chỉ số cốt lõi về chất lượng seed (`spread`, `cascade_sd`) hoàn toàn tất định và khớp tuyệt đối 100%.
+  - *Ghi chú:* File `plan_raw.csv` được tạo sau `plan_summary.csv` (timestamp 21:00 so với 20:52), nên cột `runtime` trong `plan_summary.csv` và `plan_table.md` là của lần chạy trước đó. Cột `spread` vẫn khớp tuyệt đối 100% vì thí nghiệm hoàn toàn tất định theo seed ngẫu nhiên cố định (`eval_seed = 10_000 + t`). Khuyến nghị: nên chạy lại `python summarize_plan.py` từ thư mục `experiments/` để cập nhật đồng bộ cột `runtime` mới nhất cho các file tổng hợp.
 
 ### 1.3. Đối chiếu độc lập với `plan_diff.csv` (so sánh từng cặp)
 - Hiệu trung bình $\text{Greedy} - \text{Baseline}$ tính theo từng cặp (`rep`): Khớp 100%.
@@ -71,8 +71,8 @@ Dùng công thức xấp xỉ $T \approx \left(\frac{1.96 \cdot s_d}{|\text{hi�
   - Ở $p \ge 0.05$ và $k \ge 3$, kết luận **Greedy vượt trội hơn Degree là cực kỳ vững chắc** (KTC chỉ chiếm $5\% - 23\%$ độ lớn của hiệu, dấu `*` rõ rệt với độ lợi từ $+3.5$ đến $+12.4$ nút).
   - Nếu muốn triệt tiêu hoàn toàn sự mong manh ở $k=1$, có thể chạy $T=25$ hoặc $T=30$ lần lặp.
 - **Thời gian chạy ước tính:**
-  - Cột `runtime` trong `plan_raw.csv` chỉ ghi nhận thời gian **chọn seed** (khoảng $\sim 7.3$ giây cho 1 lần lặp qua toàn bộ cấu hình, tương đương $\sim 36.5$ giây cho 5 lần lặp).
-  - Tuy nhiên, phần lớn thời gian thực tế nằm ở **đánh giá IC độc lập** ($1000$ lần mô phỏng $\times$ 10 tập Random = $144.000$ lượt mô phỏng IC mỗi lần lặp). Thời gian chạy thực tế của toàn bộ `run_plan.py` trong repo **chưa được đo và lưu lại** (có thể tự đo bằng `time python run_plan.py ...`).
+  - Cột `runtime` trong `plan_raw.csv` là thời gian tích lũy theo $k$ (do Greedy chạy một lần tới $k_{\max}=10$ và ghi nhận thời gian tích lũy cho từng mốc $k$), do đó không được cộng các $k$ lại với nhau. Thời gian chọn seed Greedy tính theo $k=10$ là khoảng 0,02 s ($p=0,01$), 0,57 s ($p=0,05$), 1,36 s ($p=0,1$) cho mỗi lần lặp.
+  - Phần lớn thời gian thực tế nằm ở **đánh giá IC độc lập** ($1000$ lần mô phỏng $\times$ 10 tập Random = $144.000$ lượt mô phỏng IC mỗi lần lặp). Thời gian chạy thực tế của toàn bộ `run_plan.py` trong repo **chưa được đo và lưu lại** (có thể tự đo bằng `time python run_plan.py ...`).
 
 ---
 
@@ -80,10 +80,10 @@ Dùng công thức xấp xỉ $T \approx \left(\frac{1.96 \cdot s_d}{|\text{hi�
 
 ### 3.1. Kết luận CÓ THỂ nói chắc
 1. **Greedy vượt trội Degree có ý nghĩa thống kê khi mạng có lan truyền rõ rệt ($p \ge 0.05$) và số seed $k \ge 3$:** Khoảng tin cậy 95% hoàn toàn dương, độ chênh lệch tăng dần theo $k$ (từ $+3.5$ lên $+12.4$ nút ở $k=10$).
-2. **Greedy và Degree vượt trội tuyệt đối so với Random:** Tăng từ $+5.9$ đến $+246.5$ nút tùy theo $p$ và $k$.
+2. Greedy hơn Random ở mọi cấu hình (+5,9 đến +246,5). Degree hơn Random khi k nhỏ hoặc p=0,01, nhưng ở p=0,05 và p=0,1 với k=10 Random cao hơn Degree (469,4 so với 465,6; 664,6 so với 661,0).
 3. **Mạng lưới xảy ra hiện tượng bão hòa mạnh ở $p \ge 0.05$:** Chỉ cần 1 seed ($k=1$), cascade đã lan tới $47\%$ mạng ($p=0.05$) và $67\%$ mạng ($p=0.10$). Vì vậy, khoảng cách tương đối giữa các thuật toán bị thu hẹp chỉ còn vài phần trăm.
 4. **Hàm ảnh hưởng thỏa mãn tính đơn điệu thực nghiệm:** $\sigma(S)$ luôn tăng chặt khi $k$ tăng trong mọi lần lặp.
-5. **CELF cho kết quả giống hệt Greedy nhưng tiết kiệm thời gian đáng kể** (đã kiểm chứng qua các thử nghiệm).
+5. CELF cho cùng kết quả với Greedy trong các thí nghiệm thăm dò (results/exploratory) và giảm khoảng 5 lần số lần tính lợi ích biên (khoảng 1.800 so với 9.815); thời gian chạy gần như bằng nhau vì vòng đầu chiếm phần lớn.
 
 ### 3.2. Kết luận KHÔNG ĐƯỢC nói
 1. **KHÔNG ĐƯỢC nói "Greedy luôn thắng Degree ở mọi cấu hình":** Tại $p=0.01$, không có bằng chứng thống kê nào cho thấy Greedy hơn Degree. Thậm chí tại $p=0.05, k=1$, Degree còn nhỉnh hơn Greedy $-1.8$ nút do nhiễu mẫu ngẫu nhiên của tập snapshot.
