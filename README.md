@@ -44,6 +44,7 @@ Các file kết quả chính thức phục vụ báo cáo và slide được lư
 | `results/plan_raw.csv` | Mỗi dòng là trung bình 1000 lần mô phỏng IC cho một (p, k, thuật toán, lần lặp); riêng với Random là trung bình qua 10 tập seed ngẫu nhiên, mỗi tập chấm bằng 1000 lần mô phỏng |
 | `results/figs/plan_fig1_spread_vs_k.png` | Biểu đồ so sánh độ lan truyền $\sigma(S)$ theo $k$ giữa Random, Degree và Greedy trên 3 giá trị $p$ (3 panel) |
 | `results/figs/plan_fig2_runtime.png` | Biểu đồ thời gian chạy (runtime) của Greedy theo $k$ ứng với các mức $p$ khác nhau |
+| `results/VERIFY.md` | Báo cáo kiểm tra độc lập độ tin cậy số liệu, kiểm tra chéo, phân tích khoảng tin cậy và môi trường thực nghiệm |
 
 *(Các kết quả thăm dò cũ như `main_results.csv`, `cost.csv`, `seeds.csv`, `bruteforce.csv`, `submodular_check.csv`, `sensitivity_R.csv` và `fig1..fig4` đã được chuyển vào `results/exploratory/`).*
 
@@ -67,6 +68,11 @@ Các file kết quả chính thức phục vụ báo cáo và slide được lư
 - **Các chế độ p:** bậc ra trung bình Email-Eu-core ≈ 25. p=0,01 là lan truyền yếu; p=0,05 và p=0,1 đã bão hòa, một seed đã kích hoạt khoảng 47% (p = 0,05) đến 67% (p = 0,1) đồ thị (kết quả thực nghiệm, xem results/plan_table.md), nên mọi thuật toán gần nhau và Greedy chỉ hơn Degree vài phần trăm.
 - **Cận 1−1/e** là trường hợp xấu nhất; trong thí nghiệm brute-force trên đồ thị con 35 nút với k ≤ 3 (chỉ thử k = 1, 2, 3), Greedy trùng nghiệm tối ưu (xem results/exploratory/bruteforce.csv).
 - **Hạn chế cần nói:** email ≠ sức ảnh hưởng thật; p là giả định; Email-Eu-core không phải dữ liệu của bài báo gốc.
+
+## Môi trường thực nghiệm
+- **Hệ điều hành & CPU:** macOS 15.7.4 (Darwin 24.6.0), Apple Silicon ARM64 (Apple M4).
+- **Python & Thư viện:** Python 3.14.7, `numpy` 2.5.4, `scipy` 1.18.1, `numba` 0.68.0, `pandas` 3.1.0, `matplotlib` 3.11.2.
+- **Thời gian chạy toàn bộ `run_plan.py`:** Chưa đo trong repo (gợi ý đo bằng `time python run_plan.py ...`). Chi tiết kiểm tra chéo và độ tin cậy số liệu xem tại `results/VERIFY.md`.
 
 ## Việc nên làm tiếp
 1. Điền số từ `results/plan_table.md` và hình `results/figs/plan_fig*.png` vào slide 3–4.
